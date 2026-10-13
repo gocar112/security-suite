@@ -111,3 +111,7 @@ node --check .\web\app.js
 - Application CVE matching requires reliable product and version inventory. The suite provides NVD/KEV research but does not claim that a CVE affects the PC merely because a related port is open.
 - Some Windows checks need administrator-readable system providers. A blocked check is shown as `UNCHECKED`, not guessed.
 - Full Windows Update enumeration can take several minutes depending on update-service health.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
