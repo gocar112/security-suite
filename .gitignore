@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+
+# Machine-specific state: dashboard address, PID, and request logs
+runtime/
+
+# Local scan snapshots describe this computer's security posture
+patches/
+*.scan.json
+
+# Briefs written from the CLI
+CVE-*.md

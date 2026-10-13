@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Local Windows vulnerability posture and remediation console">
+  <title>Security Suite</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <header class="masthead">
+    <a class="brand" href="/" aria-label="Security Suite home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>Security Suite</span>
+    </a>
+    <div class="masthead-status">
+      <span class="local-lock" aria-hidden="true"></span>
+      <span>Local session</span>
+      <span id="versionLabel">v2</span>
+    </div>
+  </header>
+
+  <main class="console">
+    <aside class="control-rail" aria-label="Scan controls">
+      <section class="rail-intro">
+        <p class="rail-kicker">Windows security console</p>
+        <h1>Inspect the machine. Keep the evidence.</h1>
+        <p>Observed configuration stays separate from vulnerability intelligence, so a warning never pretends to be a confirmed exploit.</p>
+      </section>
+
+      <section class="control-group" aria-labelledby="systemHeading">
+        <div class="control-heading">
+          <h2 id="systemHeading">This PC</h2>
+          <span>Posture</span>
+        </div>
+        <p>Checks Defender, firewall, disk encryption, remote access, risky listeners, and Windows policy.</p>
+        <div class="button-pair">
+          <button class="primary-button" id="quickSystemButton" data-job>Quick scan</button>
+          <button class="quiet-button" id="fullSystemButton" data-job>Full scan</button>
+        </div>
+      </section>
+
+      <section class="control-group" aria-labelledby="malwareHeading">
+        <div class="control-heading">
+          <h2 id="malwareHeading">Malware scan</h2>
+          <span id="malwareState">Checking</span>
+        </div>
+        <p id="malwareDescription">Detecting Microsoft Defender and Malwarebytes.</p>
+        <div class="button-pair">
+          <button class="primary-button" id="defenderQuickButton" data-job>Defender quick</button>
+          <button class="quiet-button" id="defenderFullButton" data-job>Defender full</button>
+        </div>
+        <button class="text-button" id="malwarebytesButton">Open Malwarebytes</button>
+      </section>
+
+      <section class="control-group" aria-labelledby="websiteHeading">
+        <div class="control-heading">
+          <h2 id="websiteHeading">Website</h2>
+          <span>Passive</span>
+        </div>
+        <form id="websiteForm">
+          <label for="websiteUrl">URL to inspect</label>
+          <input id="websiteUrl" name="url" type="url" placeholder="https://example.com" required maxlength="2048" autocomplete="url">
+          <button class="primary-button full-button" type="submit" data-job>Check website</button>
+        </form>
+      </section>
+
+      <section class="control-group" aria-labelledby="networkHeading">
+        <div class="control-heading">
+          <h2 id="networkHeading">Local network</h2>
+          <span>Private only</span>
+        </div>
+        <form id="networkForm">
+          <label for="networkTarget">Host or CIDR you own</label>
+          <input id="networkTarget" name="target" value="127.0.0.1" required maxlength="255" spellcheck="false">
+          <label for="networkPorts">Ports for custom scan</label>
+          <input id="networkPorts" name="ports" value="1-1024" maxlength="255" spellcheck="false">
+          <label class="check-line" for="networkQuick">
+            <input id="networkQuick" type="checkbox" checked>
+            <span>Use common ports</span>
+          </label>
+          <button class="quiet-button full-button" type="submit" data-job>Scan exposure</button>
+        </form>
+      </section>
+
+      <section class="source-note">
+        <p>Threat intelligence</p>
+        <span>NIST NVD for CVE records. CISA KEV for confirmed in-the-wild exploitation. No exploit payloads are stored.</span>
+      </section>
+    </aside>
+
+    <section class="workspace" aria-label="Security results">
+      <section class="instrument" aria-labelledby="instrumentHeading">
+        <div class="machine-map" id="machineMap">
+          <svg viewBox="0 0 140 140" role="img" aria-labelledby="scoreTitle scoreDescription">
+            <title id="scoreTitle">Security posture score</title>
+            <desc id="scoreDescription">Run a scan to calculate a posture score.</desc>
+            <circle class="dial-track" cx="70" cy="70" r="52"></circle>
+            <circle class="dial-score" id="scoreArc" cx="70" cy="70" r="52"></circle>
+            <circle class="dial-inner" cx="70" cy="70" r="38"></circle>
+            <path class="machine-glyph" d="M48 53h44v27H48zM56 88h28M70 80v8"></path>
+          </svg>
+          <div class="sweep" aria-hidden="true"></div>
+          <div class="score-readout"><strong id="scoreValue">--</strong><span>/ 100</span></div>
+        </div>
+        <div class="instrument-copy">
+          <div class="live-line">
+            <span class="live-dot" id="liveDot"></span>
+            <span id="scanState" role="status" aria-live="polite">Ready for a local scan</span>
+          </div>
+          <h2 id="instrumentHeading">No assumptions. Only checks the machine can support.</h2>
+          <p id="reportContext">Start with a quick scan. Use the full profile when you also want Windows Update enumeration.</p>
+          <div class="metric-strip" aria-label="Finding summary">
+            <div><strong id="criticalCount">0</strong><span>Critical</span></div>
+            <div><strong id="highCount">0</strong><span>High</span></div>
+            <div><strong id="mediumCount">0</strong><span>Medium</span></div>
+            <div><strong id="passedCount">0</strong><span>Passed</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ledger" aria-labelledby="ledgerHeading">
+        <header class="section-header">
+          <div>
+            <p>Evidence ledger</p>
+            <h2 id="ledgerHeading">Findings and verified controls</h2>
+          </div>
+          <div class="ledger-actions">
+            <div class="filter-set" role="group" aria-label="Filter findings">
+              <button class="filter-button is-active" data-filter="actionable">Actionable</button>
+              <button class="filter-button" data-filter="all">All checks</button>
+              <button class="filter-button" data-filter="passed">Passed</button>
+            </div>
+            <a class="download-link is-disabled" id="downloadReport" aria-disabled="true">Download report</a>
+          </div>
+        </header>
+
+        <div class="ledger-columns" aria-hidden="true">
+          <span>Control</span><span>Evidence and response</span><span>State</span>
+        </div>
+        <div class="finding-list" id="findingList" role="list">
+          <div class="empty-state" id="emptyState">
+            <span class="empty-mark" aria-hidden="true"></span>
+            <h3>The ledger is empty</h3>
+            <p>Run a system, website, or local-network scan to collect evidence.</p>
+          </div>
+        </div>
+
+        <footer class="patch-dock" id="patchDock">
+          <div>
+            <span>PowerShell patch queue</span>
+            <strong id="patchCount">0 selected</strong>
+          </div>
+          <p id="patchHelp">Run a PC scan to find supported fixes. Select their checkboxes to prepare a patch.</p>
+          <div class="patch-actions">
+            <button class="quiet-button" id="selectPatchesButton" disabled>Select supported fixes</button>
+            <button class="patch-button" id="buildPatchButton" disabled>Review patch</button>
+          </div>
+        </footer>
+      </section>
+
+      <section class="intel-desk" aria-labelledby="intelHeading">
+        <header class="section-header">
+          <div>
+            <p>Vulnerability intelligence</p>
+            <h2 id="intelHeading">NVD detail and exploited priority</h2>
+          </div>
+          <button class="quiet-button" id="syncKevButton" data-job>Refresh CISA KEV</button>
+        </header>
+        <form class="intel-search" id="intelForm">
+          <label for="intelQuery">CVE ID, vendor, or product</label>
+          <div>
+            <input id="intelQuery" placeholder="CVE-2023-23397 or Microsoft" maxlength="120" spellcheck="false">
+            <button class="primary-button" type="submit">Look up</button>
+          </div>
+        </form>
+        <div class="intel-status" id="intelStatus">Five curated records are available offline. Refresh KEV to load the current CISA catalog.</div>
+        <div class="intel-results" id="intelResults"></div>
+      </section>
+    </section>
+  </main>
+
+  <dialog class="detail-dialog" id="detailDialog">
+    <form method="dialog" class="dialog-frame">
+      <button class="dialog-close" aria-label="Close details">Close</button>
+      <p id="detailCategory">Finding</p>
+      <h2 id="detailTitle"></h2>
+      <div class="dialog-section"><span>Evidence</span><p id="detailEvidence"></p></div>
+      <div class="dialog-section"><span>Response</span><p id="detailRemediation"></p></div>
+      <div class="dialog-section" id="detailPatchSection"><span>Patch support</span><p id="detailPatch"></p></div>
+    </form>
+  </dialog>
+
+  <dialog class="detail-dialog patch-review" id="patchDialog" aria-labelledby="patchTitle">
+    <form method="dialog" class="dialog-frame">
+      <button class="dialog-close" aria-label="Close patch review">Close</button>
+      <p>PowerShell remediation</p>
+      <h2 id="patchTitle">Review your PC patch</h2>
+      <ul id="patchChanges"></ul>
+      <p>Downloading does not change your PC. Running the file without arguments shows a preview.</p>
+      <details>
+        <summary>View the exact script</summary>
+        <pre id="patchScript"></pre>
+      </details>
+      <div class="dialog-section">
+        <span>Run after review</span>
+        <p>Open PowerShell as administrator in the folder containing the downloaded file.</p>
+        <pre>powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File .\security-suite-patches.ps1</pre>
+        <p>To apply the displayed changes:</p>
+        <pre>powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File .\security-suite-patches.ps1 -Apply</pre>
+        <p>RemoteSigned applies only to that PowerShell process. If Windows marks the download as blocked, review it, then open its file Properties and choose Unblock. Organization policy may require a signed script.</p>
+        <p>Run a fresh Quick scan afterward. The patch checks each result and stops if verification fails.</p>
+      </div>
+      <div class="dialog-section">
+        <span>Backup and rollback</span>
+        <p>Applying saves a log and the previous LLMNR and AutoRun values beside the script, in SecuritySuite-Backups. Rollback for those two policies uses the backup path printed by the script:</p>
+        <pre>powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File .\security-suite-patches.ps1 -Apply -RollbackFrom '.\SecuritySuite-Backups\RUN-ID\registry.json'</pre>
+        <p>Other patch types need manual recovery. The script never restarts Windows automatically.</p>
+      </div>
+      <button class="patch-button" type="button" id="downloadPatchButton">Download PowerShell patch</button>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>
