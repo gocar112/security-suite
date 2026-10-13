@@ -1,6 +1,11 @@
 # Security Suite
 
+![Security Suite dashboard](docs/images/dashboard.png)
+
+**New here? Read the [Security Suite Guide](docs/MANUAL.md)** for step-by-step instructions with screenshots.
+
 Security Suite is a local Windows security dashboard and CLI. It separates three kinds of evidence:
+
 
 - Local posture: Defender or another registered antivirus, firewall, BitLocker, Secure Boot, SMBv1, UAC, RDP/NLA, LLMNR, AutoRun, services, pending restart state, and listening ports.
 - Passive website checks: TLS validation, security headers, cookie flags, CORS, mixed content, and response status.
@@ -53,13 +58,15 @@ python .\security_suite.py info --cve CVE-2023-23397 --live
 python .\security_suite.py info --cve CVE-2023-4966 --live --outfile .\CVE-2023-4966.md
 ```
 
+Only scan hosts you own or are authorized to assess. Public network targets are blocked unless the CLI receives the explicit `--allow-public` flag.
+
 ## CVE client briefs
 
 Any CVE in NVD or the CISA KEV catalog produces a brief with five sections: what it is, affected scope, why it matters, defensive checks, and remediation, plus references. Curated records cover a few well-known CVEs; for every other CVE the sections are derived from KEV and NVD fields. References that NVD tags as exploits, or that point at known exploit archives, are dropped.
 
 In the dashboard, look up a CVE and choose **Build client brief** to copy the markdown, download it, or save it to a client folder. Client folders are the lowercase subfolders of `..\clients` beside this checkout; the dashboard never overwrites an existing brief without confirmation.
 
-Only scan hosts you own or are authorized to assess. Public network targets are blocked unless the CLI receives the explicit `--allow-public` flag.
+![A client brief built in the dashboard](docs/images/cve-brief.png)
 
 ## Malware scanners
 
