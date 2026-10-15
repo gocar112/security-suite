@@ -119,6 +119,16 @@ node --check .\web\app.js
 - Some Windows checks need administrator-readable system providers. A blocked check is shown as `UNCHECKED`, not guessed.
 - Full Windows Update enumeration can take several minutes depending on update-service health.
 
+## Related tools
+
+**Scope** is a companion local web scanner for application-level checks that Security Suite leaves out: response headers, exposed component versions, and optional SQL-error and reflected-input probes. Like Security Suite, it runs on `127.0.0.1`, follows only same-host redirects, and reports findings as observations to verify.
+
+Use Security Suite for this PC's posture, network exposure, and CVE research; use Scope for a deeper look at a web app you own. Below, Scope ran a passive review of a local Security Suite dashboard and flagged the `Server` header that names the software.
+
+![Scope after a passive scan of a local Security Suite dashboard](docs/images/scope-scan-results.png)
+
+Scope lives at [gocar112/scope-scanner](https://github.com/gocar112/scope-scanner) (private repository; ask the owner for access).
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
